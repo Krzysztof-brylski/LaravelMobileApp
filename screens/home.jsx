@@ -5,18 +5,19 @@ import {FlatList, Text, View} from "react-native";
 import ScreenTemplate from "../templates/screenTemplate";
 import PostComponent from "../components/post/post";
 import AxiosFacade from "../facades/Axios";
-const DATA=[
-    {title:"title",author:"mike",content:"content",image:"image",id:1},
-    {title:"title",author:"mike",content:"content",image:"image",id:2},
-    {title:"title",author:"mike",content:"content",image:"image",id:3},
-    {title:"title",author:"mike",content:"content",image:"image",id:4},
-    {title:"title",author:"mike",content:"content",image:"image",id:5},
-    {title:"title",author:"mike",content:"content",image:"image",id:6},
-    {title:"title",author:"mike",content:"content",image:"image",id:7},
-];
+import {NavigationContainer} from "@react-navigation/native";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import commentView from "./comments";
+
 
 const HomeScreen=({navigation})=>{
+
+
+
+
+    const Stack = createNativeStackNavigator();
     const [data,setData]=useState([]);
+
     useEffect(()=>{
 
         AxiosFacade.build().get('/user/suggested/posts',).then((res)=>{
@@ -31,9 +32,8 @@ const HomeScreen=({navigation})=>{
            <FlatList
             data={data}
             keyExtractor={item => item.id}
-            renderItem={PostComponent}
+            renderItem={({item})=>(<PostComponent item={item} navigation={navigation}/>)}
            />
-
 
         </ScreenTemplate>
     );

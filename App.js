@@ -8,6 +8,8 @@ import AddScreen from "./screens/add";
 import ProfileScreen from "./screens/profile";
 import AxiosFacade from "./facades/Axios";
 import LoginComponent from "./screens/auth/login";
+import commentView from "./screens/comments";
+import ScreenTemplate from "./templates/screenTemplate";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -15,7 +17,7 @@ export default function App() {
    if(!auth) { return (<LoginComponent auth={auth} setAuth={setAuth}/>)};
   return (
      <NavigationContainer >
-         <Stack.Navigator>
+             <Stack.Navigator>
              <Stack.Screen
                  hideNavigationBar={true}
                  name="Home"
@@ -48,6 +50,12 @@ export default function App() {
                  })}
 
              />
+             <Stack.Screen
+                 name="Comments"
+                 component={commentView}
+             />
+
+
          </Stack.Navigator>
      </NavigationContainer>
   );
