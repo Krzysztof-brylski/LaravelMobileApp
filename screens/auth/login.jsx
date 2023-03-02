@@ -12,7 +12,7 @@ const LoginComponent=({auth,setAuth})=>{
             'email':name,
             'password':password,
         }).then((res)=>{
-            AxiosFacade.Auth(res.data.token);
+            AxiosFacade.Auth(res.data.token,res.data.user);
             setAuth(AxiosFacade.isAuth());
         }).catch((err)=>{
             console.error(err);
