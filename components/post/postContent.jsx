@@ -6,7 +6,7 @@ const PostContentComponent=({title,content,likes_count})=>{
 
 
     return(
-        <View>
+        <View style={{paddingHorizontal:15,}}>
             <Text style={{fontWeight:"bold"}}>Like count: {likes_count}</Text>
             <Text>{title}</Text>
             <Text>{content}</Text>

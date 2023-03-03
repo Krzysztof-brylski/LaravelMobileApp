@@ -1,15 +1,24 @@
 import * as React from "react";
-import {StyleSheet, Text, View, Image, TouchableOpacity} from "react-native";
-
+import {View} from "react-native";
+import { SliderBox } from "react-native-image-slider-box";
 
 const ImageCarouselComponent=({photos})=>{
     //todo make slider
+    photos=photos.map((element)=>{
+        return "http://192.168.1.10:8000/storage/"+element.src;
+    });
+
+
     return (
         <View>
-            <Image
-                source={{uri: 'http://192.168.1.10:8000/storage/'+photos[0].src}}
-                style={{width: "100%", height: 600}}
+            <SliderBox
+                images={photos}
+                sliderBoxHeight={550}
+                //onCurrentImagePressed={index => console.warn(`image ${index} pressed`)}
+                dotColor="#FFEE58"
+                inactiveDotColor="#90A4AE"
             />
+
         </View>
     );
 };
