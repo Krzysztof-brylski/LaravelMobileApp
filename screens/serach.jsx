@@ -2,15 +2,38 @@
 import * as React from "react";
 import {Button, StyleSheet, FlatList, TextInput, View} from "react-native";
 import ScreenTemplate from "../templates/screenTemplate";
-import KeyboardStickyView from "rn-keyboard-sticky-view";
+import AxiosFacade from "../facades/Axios";
+import PostComponent from "../components/post/post";
+import AuthorComponent from "../components/post/author";
 
 
 const SearchScreen=({navigation})=>{
 
     const [searching,setSearching]=React.useState(false);
-    const onFocus=()=>{
-        console.log('focus')
+    const [searchValue,setSearchValue]=React.useState("");
+    const [searchingResult,setSearchingResult]=React.useState([]);
+    const searchInput=React.useRef(null);
+    const cancelFocus=()=>{
+        searchInput.current.blur();
+        setSearchValue("");
     };
+
+    const handleSearchRequest=()=>{
+        AxiosFacade.build().get("/search",{params:{name:searchValue}}).then((res)=>{
+            console.log(res.data.data);
+            setSearchingResult(res.data.data);
+        });
+    };
+    const handleFocus=()=>{
+        setSearchValue("");
+        setSearching(true);
+    };
+
+    const  handleChangeText=(param)=>{
+        setSearchValue(param);
+        handleSearchRequest();
+    };
+
 
     return (
 
@@ -19,8 +42,10 @@ const SearchScreen=({navigation})=>{
                 <View  style={style.formContainer}>
 
                     <TextInput
-                        onFocus={() =>setSearching(true)}
+                        ref={searchInput}
+                        onFocus={handleFocus}
                         onBlur={() => setSearching(false)}
+                        onChangeText={handleChangeText}
                         style={{width: "80%"}}
                         placeholder={"Search ..."}
                     />
@@ -29,12 +54,18 @@ const SearchScreen=({navigation})=>{
                     searching &&
                     <Button
                         visible={!searching}
+                        onPress={cancelFocus}
                         title="Cancel"
                     />
 
                 }
             </View>
-            <FlatList/>
+
+            <FlatList
+                data={searchingResult}
+                keyExtractor={item => item.id}
+                renderItem={({item})=>(<View style={{margin:10}}><AuthorComponent image={item.photo} username={item.username} name={item.name} /></View>)}
+            />
         </ScreenTemplate>
     );
 
