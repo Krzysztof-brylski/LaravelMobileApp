@@ -25,7 +25,7 @@ class Axios {
     build(){
         return axios.create({
             baseURL: this.baseUrl,
-            timeout: 1500,
+            timeout: 2500,
             headers:this.headers
         });
     }

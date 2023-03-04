@@ -3,13 +3,14 @@ import * as React from "react";
 import {StyleSheet, TouchableOpacity, View} from "react-native";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faHome, faMagnifyingGlass, faPlus, faUser} from "@fortawesome/free-solid-svg-icons";
+import AxiosFacade from "../facades/Axios";
 
 
 
 const NavBar=({navigation})=>{
 
-    const handleNavigation=(path)=>{
-        navigation.navigate(path);
+    const handleNavigation=(path,id=null)=>{
+        navigation.navigate(path,id);
     };
 
     return (
@@ -33,7 +34,7 @@ const NavBar=({navigation})=>{
             </TouchableOpacity>
 
             <TouchableOpacity
-                onPress={()=>{handleNavigation('Profile')}}
+                onPress={()=>{handleNavigation('Profile',{'id':AxiosFacade.User.id})}}
             >
 
                 <FontAwesomeIcon icon={faUser} size={25} />

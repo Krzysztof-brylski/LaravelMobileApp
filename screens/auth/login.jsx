@@ -15,7 +15,6 @@ const LoginComponent=({auth,setAuth})=>{
             AxiosFacade.Auth(res.data.token,res.data.user);
             setAuth(AxiosFacade.isAuth());
         }).catch((err)=>{
-            console.error(err);
             console.error(err.message);
         });
 
