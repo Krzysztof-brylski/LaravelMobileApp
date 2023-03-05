@@ -16,7 +16,8 @@ const HomeScreen=({navigation})=>{
 
     const Stack = createNativeStackNavigator();
     const [data,setData]=useState(null);
-
+    const [reload,setReload]=useState(false);
+    const [reloading,setReloading]=useState(0);
     useEffect(()=>{
 
         AxiosFacade.build().get('/user/suggested/posts',).then((res)=>{
@@ -24,7 +25,8 @@ const HomeScreen=({navigation})=>{
         }).catch((err)=>{
             console.error(err.message);
         });
-    },[]);
+        setReload(false);
+    },[reloading]);
 
     return (
 
@@ -40,6 +42,8 @@ const HomeScreen=({navigation})=>{
                    <FlatList
                     data={data}
                     keyExtractor={item => item.id}
+                    onRefresh={()=>{setReloading(reloading+1)}}
+                    refreshing={reload}
                     renderItem={({item})=>(<PostComponent item={item} navigation={navigation}/>)}
                    />
                 )

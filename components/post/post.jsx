@@ -22,8 +22,13 @@ const PostComponent=({item, navigation})=>{
                 />
             </TouchableOpacity>
             <ImageCarouselComponent photos={item.photos}/>
-            <PostActionComponent id={item.id} navigation={navigation}/>
-            <PostContentComponent title={item.title} content={item.content} likes_count={item.likes_count}/>
+            <PostActionComponent
+                id={item.id}
+                navigation={navigation}
+                likes_count={item.likes_count}
+                likeStatus={item.liked}
+            />
+            <PostContentComponent title={item.title} content={item.content} />
         </View>
     );
 
