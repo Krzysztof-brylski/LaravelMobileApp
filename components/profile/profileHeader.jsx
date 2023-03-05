@@ -3,7 +3,7 @@ import * as React from "react";
 import {Image, Text, View} from "react-native";
 
 
-const ProfileHeader=({image,name,username})=>{
+const ProfileHeader=({image,name,username,description})=>{
 
     return (
         <View style={{paddingHorizontal:20,alignItems:"start", justifyContent:"center"}}>
@@ -13,7 +13,7 @@ const ProfileHeader=({image,name,username})=>{
             />
             <View style={{paddingVertical:15}} >
                 <Text style={{fontSize:15,fontWeight:"bold"}}>{name} @{username}</Text>
-
+                <Text style={{paddingTop:5}}>{description}</Text>
             </View>
         </View>
     );

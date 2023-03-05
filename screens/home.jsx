@@ -1,13 +1,12 @@
 
 import * as React from "react";
 import  { useEffect, useState} from "react";
-import {FlatList, Text, View} from "react-native";
+import {FlatList} from "react-native";
 import ScreenTemplate from "../templates/screenTemplate";
 import PostComponent from "../components/post/post";
 import AxiosFacade from "../facades/Axios";
-import {NavigationContainer} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import commentView from "./comments";
+import LoadingComponent from "../components/helpers/loading";
 
 
 const HomeScreen=({navigation})=>{
@@ -16,7 +15,7 @@ const HomeScreen=({navigation})=>{
 
 
     const Stack = createNativeStackNavigator();
-    const [data,setData]=useState([]);
+    const [data,setData]=useState(null);
 
     useEffect(()=>{
 
@@ -28,13 +27,23 @@ const HomeScreen=({navigation})=>{
     },[]);
 
     return (
-        <ScreenTemplate navigation={navigation}>
-           <FlatList
-            data={data}
-            keyExtractor={item => item.id}
-            renderItem={({item})=>(<PostComponent item={item} navigation={navigation}/>)}
-           />
 
+        <ScreenTemplate navigation={navigation}>
+            {
+                data == null &&(
+                    <LoadingComponent/>
+                )
+            }
+
+            {
+                data !== null &&(
+                   <FlatList
+                    data={data}
+                    keyExtractor={item => item.id}
+                    renderItem={({item})=>(<PostComponent item={item} navigation={navigation}/>)}
+                   />
+                )
+           }
         </ScreenTemplate>
     );
 

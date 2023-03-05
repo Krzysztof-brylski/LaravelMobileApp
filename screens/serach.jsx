@@ -3,15 +3,15 @@ import * as React from "react";
 import {Button, StyleSheet, FlatList, TextInput, View} from "react-native";
 import ScreenTemplate from "../templates/screenTemplate";
 import AxiosFacade from "../facades/Axios";
-import PostComponent from "../components/post/post";
-import AuthorComponent from "../components/post/author";
+import SearchingResult from "../components/searching/searchingResult";
+import LoadingComponent from "../components/helpers/loading";
 
 
 const SearchScreen=({navigation})=>{
 
     const [searching,setSearching]=React.useState(false);
     const [searchValue,setSearchValue]=React.useState("");
-    const [searchingResult,setSearchingResult]=React.useState([]);
+    const [searchingResult,setSearchingResult]=React.useState(null);
     const searchInput=React.useRef(null);
     const cancelFocus=()=>{
         searchInput.current.blur();
@@ -20,7 +20,6 @@ const SearchScreen=({navigation})=>{
 
     const handleSearchRequest=()=>{
         AxiosFacade.build().get("/search",{params:{name:searchValue}}).then((res)=>{
-            console.log(res.data.data);
             setSearchingResult(res.data.data);
         });
     };
@@ -40,7 +39,6 @@ const SearchScreen=({navigation})=>{
         <ScreenTemplate navigation={navigation}>
             <View style={[style.searchContainer, searching? style.searchContainerUnderLine:null]}>
                 <View  style={style.formContainer}>
-
                     <TextInput
                         ref={searchInput}
                         onFocus={handleFocus}
@@ -60,12 +58,23 @@ const SearchScreen=({navigation})=>{
 
                 }
             </View>
+            {
+                searchingResult === null &&(
+                    <LoadingComponent/>
+                )
+            }
 
-            <FlatList
-                data={searchingResult}
-                keyExtractor={item => item.id}
-                renderItem={({item})=>(<View style={{margin:10}}><AuthorComponent image={item.photo} username={item.username} name={item.name} /></View>)}
-            />
+            {
+                searchingResult !== null &&(
+
+                    <FlatList
+                        data={searchingResult}
+                        keyExtractor={item => item.id}
+                        renderItem={({item})=>(<SearchingResult item={item} navigation={navigation}/> )}
+                    />
+                )
+            }
+
         </ScreenTemplate>
     );
 

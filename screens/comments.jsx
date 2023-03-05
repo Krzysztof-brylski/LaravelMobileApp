@@ -5,10 +5,12 @@ import AxiosFacade from "../facades/Axios";
 import {useState,useEffect} from "react";
 import CommentComponent from "../components/comments/comment";
 import PostComponent from "../components/post/post";
+import LoadingComponent from "../components/helpers/loading";
+import ScreenTemplate from "../templates/screenTemplate";
 
 const CommentView=({ route, navigation })=> {
 
-    const [commentsData,setCommentsData]=useState([]);
+    const [commentsData,setCommentsData]=useState(null);
     const [comment,setComment]=useState("");
     const [reload,setReload]=useState(false);
     const postId = route.params.id;
@@ -18,29 +20,39 @@ const CommentView=({ route, navigation })=> {
     useEffect(()=>{
         AxiosFacade.build().get(`/post/comment/${postId}`).then((res)=>{
             setCommentsData(res.data.data);
-            //console.log(res.data.data);
         });
     },[reload]);
 
     const sendComment=()=>{
         AxiosFacade.build().post(`/post/comment/${postId}`,{content:comment}).then((res)=>{
-            //setCommentsData(res.data.data);
             setReload(true);
-            setComment("")
-            //console.log(res.code);
+            setComment("");
         });
     };
 
 
     return (
         <View style={{height:"100%"}}>
-            <View style={style.commentListContainer}>
-                <FlatList
-                    data={commentsData}
-                    keyExtractor={item => item.id}
-                    renderItem={CommentComponent}
 
-                />
+            {
+                commentsData === null &&(
+                    <LoadingComponent/>
+                )
+            }
+
+
+            <View style={style.commentListContainer}>
+                {
+                    commentsData !== null &&(
+                        <FlatList
+                            data={commentsData}
+                            keyExtractor={item => item.id}
+                            renderItem={({item})=><CommentComponent item={item} navigation = {navigation} />}
+
+                        />
+                    )
+                }
+
             </View>
             <KeyboardStickyView  style={style.commentFormContainer}>
                 <Image

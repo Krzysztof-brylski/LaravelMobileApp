@@ -1,14 +1,13 @@
 
 import * as React from "react";
-import {StyleSheet, Text, View,FlatList} from "react-native";
-import SearchScreen from "./serach";
-import NavBar from "../components/navBar";
+import {StyleSheet, Text, View, FlatList, Button} from "react-native";
 import AxiosFacade from "../facades/Axios";
 import ScreenTemplate from "../templates/screenTemplate";
 import ProfileHeader from "../components/profile/profileHeader";
 import NoPosts from "../components/profile/noPosts";
-import PostComponent from "../components/post/post";
 import PostThumbnail from "../components/post/postThumbnali";
+import LoadingComponent from "../components/helpers/loading";
+
 
 
 const ProfileScreen=({navigation, route})=>{
@@ -18,47 +17,70 @@ const ProfileScreen=({navigation, route})=>{
     React.useEffect(()=>{
         AxiosFacade.build().get(`user/info/${route.params.id}`).then((res)=>{
             setUserData(res.data.data);
-            console.log(res.data.data);
+            //console.log(res.data.data);
         }).catch((err)=>{
-           console.log(err);
+           console.error(err);
         });
     },[]);
     return (
 
-            userData !== null &&
+
             <ScreenTemplate navigation={navigation}>
-                <View style={style.headerContainer}>
-                    <ProfileHeader
-                        image={userData.photo.src}
-                        name={userData.name}
-                        username={userData.username}
-                    />
-                    <View>
-                        <Text style={style.counterHeader}>followers</Text>
-                        <Text style={style.counterValue}> {userData.followersCount}</Text>
-                    </View>
-
-                    <View>
-                        <Text style={style.counterHeader}>follows</Text>
-                        <Text style={style.counterValue}>{userData.followsCount}</Text>
-                    </View>
-                </View>
                 {
-                    userData.posts.length ===0 && (
-                        <NoPosts/>
+                    userData === null &&(
+                        <LoadingComponent/>
                     )
                 }
-                {
-                    userData.posts.length !==0 && (
-                        <FlatList
-                            numColumns={3}
-                            data={userData.posts}
-                            keyExtractor={item => item.id}
-                            renderItem={({item})=><PostThumbnail post={item} />}
-                        />
-                    )
-                }
+               { userData !== null &&(
+                <View>
+                    <View style={style.headerContainer}>
+                        <View style={style.profileInfoContainer}>
+                            <ProfileHeader
+                                image={userData.photo.src}
+                                name={userData.name}
+                                username={userData.username}
+                                description={userData.description}
+                            />
+                            <View  style={{alignItems:"center"}}>
+                                <Text style={style.counterHeader}>Posts</Text>
+                                <Text style={style.counterValue}>{userData.postsCount}</Text>
+                            </View>
 
+                            <View style={{alignItems:"center"}}>
+                                <Text style={style.counterHeader}>Followers</Text>
+                                <Text style={style.counterValue}> {userData.followersCount}</Text>
+                            </View>
+
+                            <View  style={{alignItems:"center"}}>
+                                <Text style={style.counterHeader}>Follows</Text>
+                                <Text style={style.counterValue}>{userData.followsCount}</Text>
+                            </View>
+                        </View>
+                        <View style={style.buttonContainer}>
+                            <Button
+                                title="Follow"
+                            />
+                            <Button
+                                title="Message"
+                            />
+                        </View>
+                    </View>
+                    {
+                        userData.posts.length ===0 && (
+                            <NoPosts/>
+                        )
+                    }
+                    {
+                        userData.posts.length !==0 && (
+                            <FlatList
+                                numColumns={3}
+                                data={userData.posts}
+                                keyExtractor={item => item.id}
+                                renderItem={({item})=><PostThumbnail post={item} />}
+                            />
+                        )
+                    }
+                </View>)}
             </ScreenTemplate>
 
 
@@ -72,16 +94,24 @@ const style =  StyleSheet.create({
         fontWeight:"bold",
     },
     counterValue:{
-        fontSize:15,
+        fontSize:20,
+        paddingTop:6,
         fontWeight:"bold",
     },
     counterContainer:{
       margin:10,
     },
-    headerContainer:{
+    profileInfoContainer:{
         flexDirection:'row',
         justifyContent:"space-between",
         alignItems:"center",
+    },
+    buttonContainer:{
+        flexDirection:'row',
+        justifyContent:"center",
+        padding:10,
+    },
+    headerContainer:{
         borderBottomColor: 'gray',
         borderBottomWidth: 1,
         paddingHorizontal:15,

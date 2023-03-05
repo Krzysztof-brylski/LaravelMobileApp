@@ -1,5 +1,5 @@
 import * as React from "react";
-import {StyleSheet, Text, View, Image, TouchableOpacity} from "react-native";
+import {StyleSheet, View, TouchableOpacity} from "react-native";
 import AxiosFacade from "../../facades/Axios";
 import AuthorComponent from "./author";
 import ImageCarouselComponent from "./imageCarousel";
@@ -8,13 +8,19 @@ import PostContentComponent from "./postContent";
 
 const PostComponent=({item, navigation})=>{
 
+    const viewProfile=()=>{
+        navigation.navigate('Profile',{'id':item.author.id});
+    };
+
     return (
         <View style={style.postContainer}>
-            <AuthorComponent
-                image={item.author.photo}
-                name={item.author.name}
-                username={item.author.username}
-            />
+            <TouchableOpacity onPress={viewProfile} >
+                <AuthorComponent
+                    image={item.author.photo}
+                    name={item.author.name}
+                    username={item.author.username}
+                />
+            </TouchableOpacity>
             <ImageCarouselComponent photos={item.photos}/>
             <PostActionComponent id={item.id} navigation={navigation}/>
             <PostContentComponent title={item.title} content={item.content} likes_count={item.likes_count}/>
