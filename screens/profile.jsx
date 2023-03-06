@@ -1,19 +1,21 @@
 
 import * as React from "react";
-import {StyleSheet, Text, View, FlatList, Button} from "react-native";
+import {StyleSheet, Text, View, FlatList, Button, TouchableOpacity} from "react-native";
 import AxiosFacade from "../facades/Axios";
 import ScreenTemplate from "../templates/screenTemplate";
 import ProfileHeader from "../components/profile/profileHeader";
 import NoPosts from "../components/profile/noPosts";
 import PostThumbnail from "../components/post/postThumbnali";
 import LoadingComponent from "../components/helpers/loading";
+import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
+import {faBell,faCommentSms,faBellSlash} from "@fortawesome/free-solid-svg-icons";
 
 
 
 const ProfileScreen=({navigation, route})=>{
 
     const [userData,setUserData]=React.useState(null);
-
+    const [reload,setReload]=React.useState(0);
     React.useEffect(()=>{
         AxiosFacade.build().get(`user/info/${route.params.id}`).then((res)=>{
             setUserData(res.data.data);
@@ -21,7 +23,18 @@ const ProfileScreen=({navigation, route})=>{
         }).catch((err)=>{
            console.error(err);
         });
-    },[]);
+    },[reload]);
+
+    const follow=()=>{
+        AxiosFacade.build().post(`/user/follow/${route.params.id}`).then((res)=>{
+            console.log(res.status);
+            setReload(reload+1);
+        }).catch((err)=>{
+            console.error(err);
+        });
+    };
+
+
     return (
 
 
@@ -56,14 +69,31 @@ const ProfileScreen=({navigation, route})=>{
                                 <Text style={style.counterValue}>{userData.followsCount}</Text>
                             </View>
                         </View>
-                        <View style={style.buttonContainer}>
-                            <Button
-                                title="Follow"
-                            />
-                            <Button
-                                title="Message"
-                            />
-                        </View>
+                        {
+                            AxiosFacade.User.id !== userData.id &&(
+                                <View style={style.buttonContainer}>
+                                    {userData.isFollowed &&(
+                                        <TouchableOpacity style={style.button} onPress={follow}>
+                                            <Text style={style.buttonText}>Un Follow</Text>
+                                            <FontAwesomeIcon icon={faBellSlash} size={20} />
+                                        </TouchableOpacity>
+                                        )
+                                    }
+                                    {!userData.isFollowed &&(
+                                        <TouchableOpacity style={style.button} onPress={follow}>
+                                            <Text style={style.buttonText}>Follow</Text>
+                                            <FontAwesomeIcon icon={faBell} size={20} />
+                                        </TouchableOpacity>
+                                        )
+                                    }
+
+                                    <TouchableOpacity style={style.button}>
+                                        <Text style={style.buttonText}>Message</Text>
+                                        <FontAwesomeIcon icon={faCommentSms} size={20} />
+                                    </TouchableOpacity>
+                                </View>
+                            )
+                        }
                     </View>
                     {
                         userData.posts.length ===0 && (
@@ -110,6 +140,15 @@ const style =  StyleSheet.create({
         flexDirection:'row',
         justifyContent:"center",
         padding:10,
+    },
+    button:{
+        flexDirection:'row',
+        padding: 10,
+    },
+    buttonText:{
+        fontSize:20,
+        paddingHorizontal:10,
+        fontWeight:"bold"
     },
     headerContainer:{
         borderBottomColor: 'gray',

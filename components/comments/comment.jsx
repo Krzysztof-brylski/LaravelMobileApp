@@ -13,7 +13,6 @@ const CommentComponent=({item, navigation })=>{
     const viewProfile=()=>{
         navigation.navigate('Profile',{'id':item.author.id});
     };
-
     const like=()=>{
 
         AxiosFacade.build().post(`/comment/like/${item.id}`).then((res)=>{
