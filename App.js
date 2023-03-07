@@ -10,6 +10,8 @@ import AxiosFacade from "./facades/Axios";
 import LoginComponent from "./screens/auth/login";
 import commentView from "./screens/comments";
 import ScreenTemplate from "./templates/screenTemplate";
+import MessagesScreen from "./screens/messages";
+import MessageWithUserScreen from "./screens/messageWithUser";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -51,10 +53,23 @@ export default function App() {
 
              />
              <Stack.Screen
+                name="Messages"
+                component={MessagesScreen}
+                options={() => ({
+                    headerShown:false,
+                })}
+
+             />
+             <Stack.Screen
                  name="Comments"
                  component={commentView}
              />
+             <Stack.Screen
+                name="MessageWithUserScreen"
+                component={MessageWithUserScreen}
+                options={{ title: '' }}
 
+             />
 
          </Stack.Navigator>
      </NavigationContainer>
