@@ -5,7 +5,7 @@ import React from "react";
 const SearchingResult=({item, navigation})=>{
 
   const viewProfile=()=>{
-    navigation.navigate('Profile',{'id':item.id});
+    navigation.push('Profile',{'id':item.id});
   };
 
   return(

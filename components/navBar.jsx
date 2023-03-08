@@ -10,6 +10,11 @@ import AxiosFacade from "../facades/Axios";
 const NavBar=({navigation})=>{
 
     const handleNavigation=(path,id=null)=>{
+        if(path==="Profile"){
+            navigation.push(path,id);
+            return;
+        }
+
         navigation.navigate(path,id);
     };
 
